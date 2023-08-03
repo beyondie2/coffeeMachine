@@ -3,104 +3,154 @@ package coffeeMachine;
 import java.util.Scanner;
 
 public class CoffeeMachine {
-    public static void main(String[] args) {
-        //CoffeeMachine coffeeMachine = new CoffeeMachine();
-        //CoffeeMachine coffeeMachine = new CoffeeMachine(new Water(400), new Milk(540), new Bean(120), new Cup(9), new Money(50000));
-        boolean state = true;
-        int water = 400;
-        int milk = 540;
-        int bean = 120;
-        int cups = 9;
-        int money = 50000;
+    boolean isRun = true;
+    Water water;
+    Milk milk;
+    CoffeeBean coffeeBean;
+    Cup cup;
 
+    Money money;
+    Ingredient[] ingredients;
+
+    // 생성자
+    public CoffeeMachine(Water water, Milk milk, CoffeeBean coffeeBean, Cup cup, Money money) {
+        this.water = water;
+        this.milk = milk;
+        this.coffeeBean = coffeeBean;
+        this.cup = cup;
+        this.money = money;
+        this.ingredients = new Ingredient[]{this.water, this.milk, this.coffeeBean, this.cup, this.money};
+    }
+
+    // 메소드
+    void takeOut(){};
+    void work(){
+        System.out.println("커피머신이 작동했습니다!");
+        output();
+        //boolean isRun = true;
+        while (isRun){
+            int answer = userResponse("1. 구매 2. 채우기 3. 가져가기 > ");
+
+            switch (answer){
+                case 1 -> buy();
+                case 2 -> fill();
+                case 3 -> take();
+            }
+        }
+    }
+
+    private void buy(){
+        // boolean isRun = true;
+        while (isRun){
+            int answer = userResponse("1. 에스프레소 2. 라떼 3. 카푸치노 4. 안마심> ");
+
+            switch (answer){
+                case 1 -> calculate(250, 0, 16);
+                case 2 -> calculate(350, 75, 20);
+                case 3 -> calculate(200, 100, 12);
+                case 4 -> end();
+            }
+
+        }
+
+    }
+
+    void end(){
+        isRun = false;
+    }
+    private void calculate(int water, int milk, int bean){
+        System.out.println("water = " + water);
+        System.out.println("milk = " + milk);
+        System.out.println("bean = " + bean);
+    }
+    private void fill(){
+        System.out.println("꽉 채웠습니다.");
+    }
+
+    private void take(){
+        int takenMoney = userResponse("얼마를 꺼내시겠어요? > ");
+        this.money.removeAmount(takenMoney);
+        System.out.println(takenMoney + "만큼 꺼냈습니다.");
+    }
+
+    int userResponse(String message){
         Scanner scanner = new Scanner(System.in);
+        System.out.print(message);
+        int inputAnswer = Integer.parseInt(scanner.nextLine());
+        return inputAnswer;
+    }
 
-        while (state){
-            System.out.println("현재 커피머신 상태: ");
-            System.out.println("남은 재료와 돈 상태: ");
-            System.out.println("물: " + water + " ml");
-            System.out.println("우유: " + milk + " ml");
-            System.out.println("원두: " + bean + " g");
-            System.out.println("일회용 컵: " + cups + " 개");
-            System.out.println("돈: " + money + " 원");
+    void output(){
+        for(Ingredient ingredient:ingredients){
+            System.out.println(ingredient.name + " : " + ingredient.getAmount() + " " + ingredient.unit);
+        }
+    }
 
-            System.out.println("옵션을 선택하세요.");
-            System.out.println("[1.구매|2.채우기|3.가져오기|4.종료]");
-            System.out.print("선택>");
+    public static void main(String[] args) {
+        CoffeeMachine coffeeMachine = new CoffeeMachine(new Water(400),
+                new Milk(540), new CoffeeBean(120),
+                new Cup(9), new Money(50000));
+        coffeeMachine.work();
+    }
+}
 
-            int myChoice = scanner.nextInt();
 
-            switch(myChoice) {
-                case 1:
-                    System.out.println("구매를 선택했습니다.");
-                    System.out.println("어떤 커피를 구매하시겠습니까?");
-                    System.out.println("1. 에스프레소 (가격: 4000원)");
-                    System.out.println("2. 라떼 (가격: 7000원)");
-                    System.out.println("1. 카푸치노 (가격: 6000원)");
-                    System.out.print("선택>");
 
-                    int myCoffee = scanner.nextInt();
+abstract class Ingredient {
+    private int amount;
+    protected String name;
+    protected String unit;
 
-                    switch(myCoffee) {
-                        case 1:
-                            System.out.println("에스프레소를 선택했습니다.");
-                            water = water - 100;
-                            System.out.println("물의 양은 " + water + "입니다." );
-                            if(water<400){
-                                System.out.println("물이 부족합니다.");
-                            }
-                            break;
-                        case 2:
-                            System.out.println("라떼를 선택했습니다.");
-                            water = water - 100;
-                            if(water<400){
-                                System.out.println("물이 부족합니다.");
-                            }
-                            break;
-                        case 3:
-                            System.out.println("카푸치노를 선택했습니다.");
-                            water = water - 100;
-                            if(water<400){
-                                System.out.println("물이 부족합니다.");
-                            }
-                            break;
-                        case 4:
-                            System.out.println("종료를 선택했습니다.");
-                            break;
-                        default:
-                            System.out.println("오류");
-                            break;
-                    } //switch(myCoffee) 끝
+    public Ingredient(int amount) {
+        this.amount = amount;
+    }
 
-                    if(water < 0 ) {
-                        state = false;
-                    }
-                    break;
-                case 2:
-                    System.out.println("채우기를 선택했습니다.");
-                    water = 400;
-                    milk = 540;
-                    bean = 120;
-                    cups = 9;
-                    System.out.println("소모품을 다 채웠습니다.");
-                    break;
-                case 3:
-                    System.out.println("가져오기를 선택했습니다.");
-                    System.out.println("돈은 " + money + "입니다.");
+    public int getAmount(){
+        return amount;
+    }
 
-                    break;
-                case 4:
-                    System.out.println("종료를 선택했습니다.");
-                    state = false;
-                    break;
+    void addAmount(int amount){
+        this.amount += amount;
+    }
 
-                default:
-                    System.out.println("오류");
-                    break;
-            }
+    void removeAmount(int amount){
+        this.amount -= amount;
+    }
+}
 
-            if(myChoice==1){
-            }
-        } // while 끝
-    } // main 끝
+class Money extends Ingredient {
+    public Money(int amount) {
+        super(amount);
+        this.name = "돈";
+        this.unit = "ml";
+    }
+}
+
+class CoffeeBean extends Ingredient {
+    public CoffeeBean(int amount) {
+        super(amount);
+        this.name = "원두";
+        this.unit = "g";
+    }
+}
+class Cup extends Ingredient {
+    public Cup(int amount) {
+        super(amount);
+        this.name = "종이컵";
+        this.unit = "개";
+    }
+}
+class Water extends Ingredient {
+    public Water(int amount) {
+        super(amount);
+        this.name = "물";
+        this.unit = "ml";
+    }
+}
+class Milk extends Ingredient {
+    public Milk(int amount) {
+        super(amount);
+        this.name = "우유";
+        this.unit = "ml";
+    }
 }
