@@ -59,9 +59,9 @@ public class CoffeeMachine {
         isRun = false;
     }
     private void calculate(int water, int milk, int bean){
-        System.out.println("water = " + water);
-        System.out.println("milk = " + milk);
-        System.out.println("bean = " + bean);
+        System.out.println("물은 " + water + "이 필요합니다.");
+        System.out.println("우유는 " + milk + "이 필요합니다.");
+        System.out.println("원두는 " + bean + "이 필요합니다.");
     }
     private void fill(){
         System.out.println("꽉 채웠습니다.");
@@ -122,7 +122,7 @@ class Money extends Ingredient {
     public Money(int amount) {
         super(amount);
         this.name = "돈";
-        this.unit = "ml";
+        this.unit = "원";
     }
 }
 
